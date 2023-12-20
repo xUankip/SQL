@@ -1,0 +1,60 @@
+DROP TABLE PhongBan
+CREATE TABLE PhongBan (
+    MaPB VARCHAR (7) PRIMARY KEY,
+    TenPB NVARCHAR (50)
+)
+GO
+DROP TABLE NhanVien
+GO
+CREATE TABLE NhanVien (
+    MaNV VARCHAR(7) PRIMARY KEY,
+    TenNV NVARCHAR(50),
+    NgaySinh DATETIME,
+    SoCCCD CHAR (19),
+    GioiTinh CHAR (1),
+    DiaChi NVARCHAR (100),
+    NgayVaoLam DATETIME,
+    PhongBan1 VARCHAR(7),
+    FOREIGN KEY (PhongBan1) REFERENCES PhongBan(MaPB)
+)
+GO
+DROP TABLE LuongDA
+CREATE TABLE LuongDA (
+    MaDA VARCHAR (8),
+    NgayNhan DATETIME,
+    SoTien Money,
+    MaNV VARCHAR(7),
+    PRIMARY KEY (MaDA, MaNV),
+    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV)
+)
+GO
+INSERT INTO PhongBan VALUES (1, 'CODE'), (2, 'DECODE'), (3, 'TEST'), (4, 'BUFF')
+GO
+SELECT * FROM PhongBan
+GO
+INSERT INTO NhanVien VALUES (123, 'XUAN', '12/12/1997', 22097006525, 'M', 'HANOI', '2/12/2019', 1),
+                            (124, 'LAM', '12/15/2003', 22097006525, 'M', 'HANOI', '2/12/2019', 2),
+                            (125, 'TUNG', '12/14/1995', 22097006525, 'M', 'HANOI', '2/12/2019', 3),
+                            (126, 'HIEU', '12/13/2005', 22097006525, 'M', 'HANOI', '2/12/2019', 4)
+GO
+SELECT * FROM NhanVien
+GO
+INSERT INTO LuongDA VALUES (456, '11/11/2023', 200000000, 123)
+GO
+INSERT INTO LuongDA VALUES (457, '11/11/2023', 200000000, 125)
+GO
+INSERT INTO LuongDA VALUES (458, '11/11/2023', 200000000, 126)
+GO
+SELECT * FROM LuongDA
+SELECT * FROM PhongBan
+SELECT * FROM NhanVien
+
+SELECT GioiTinh FROM NhanVien
+
+SELECT MaNV, SUM(SoTien) AS TongLuong FROM LuongDA GROUP BY MaNV
+
+SELECT SoTien, TenNV FROM LuongDA INNER JOIN NhanVien ON
+LuongDA.MaNV = NhanVien.MaNV WHERE NhanVien.PhongBan1 LIKE '1'
+
+SELECT PhongBan1, COUNT(*) AS TongNV FROM NhanVien
+GROUP BY PhongBan1
