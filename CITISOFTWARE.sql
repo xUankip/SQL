@@ -22,10 +22,11 @@ SELECT * FROM Employee
 DROP TABLE Nhom
 GO 
 CREATE TABLE Nhom (
-    GroupID INT,
+    GroupID INT primary Key,
     GroupName VARCHAR (30),
     LeaderID INT,
-    ProjectID INT PRIMARY KEY
+    ProjectID INT 
+    FOREIGN KEY (ProjectID) REFERENCES Project(ProjectID)
 )
 GO
 INSERT INTO Nhom VALUES (1, 'Nhom1', 123, 1),
@@ -43,8 +44,7 @@ CREATE TABLE Project(
     StartDate DATETIME,
     EndDate DATETIME,
     Periodd INT,
-    Cost MONEY,
-    FOREIGN KEY (ProjectID) REFERENCES Nhom(ProjectID)
+    Cost MONEY
     
 )
 GO
@@ -69,3 +69,42 @@ INSERT INTO GroupDetail VALUES (1, 123, 'Ongoing'),
                                 GO
 SELECT * FROM GroupDetail
 GO
+
+------------------3A-------------
+SELECT * FROM Employee
+------------------3B-------------
+SELECT * FROM Employee AS e
+JOIN GroupDetail AS gd ON e.EmployeeID = gd.EmployeeID
+JOIN Nhom AS n ON gd.GroupID = n.GroupID
+JOIN Project AS p ON n.ProjectID = p.ProjectID
+WHERE p.ProjectName = 'CODE';
+-----------------3C--------------
+SELECT n.GroupID, n.GroupName, COUNT(gd.EmployeeID) AS NumberOfEmployees
+FROM Nhom n
+LEFT JOIN GroupDetail gd ON n.GroupID = gd.GroupID
+GROUP BY n.GroupID, n.GroupName;
+---------------3D--------------
+SELECT e.Name, e.Tel, e.Email
+FROM Employee AS e
+JOIN Nhom as n ON e.EmployeeID = n.LeaderID
+--------------3E---------------
+
+SELECT
+    N.GroupID,
+    N.GroupName,
+    E.EmployeeID,
+    E.Name AS EmployeeName,
+    P.ProjectID,
+    P.ProjectName,
+    P.StartDate,
+    P.EndDate
+FROM
+    Nhom N
+JOIN
+    GroupDetail GD ON N.GroupID = GD.GroupID
+JOIN
+    Employee E ON GD.EmployeeID = E.EmployeeID
+JOIN
+    Project P ON N.ProjectID = P.ProjectID
+WHERE
+    P.StartDate > '2023-07-07';
